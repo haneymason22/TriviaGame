@@ -1,1 +1,1 @@
-# TriviaGame
+# Trivia Game with the topic of 1970s rock bands.
