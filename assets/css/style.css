@@ -1,0 +1,32 @@
+body {
+    background-color: turquoise;;
+}
+
+#title {
+    text-align: center;
+    color: yellow;
+    font-size: 75px;
+}
+
+.main-content {
+   
+    max-width: 700px;
+    padding: 30px;
+    margin: 0 0 0 300px;
+    background-color: sandybrown;
+
+}
+
+#text {
+    text-align: center;
+    font-size: larger;
+}
+
+#question-response {
+    text-align: center;
+    font-size: larger; 
+}
+
+#options {
+    text-align: center;
+}
