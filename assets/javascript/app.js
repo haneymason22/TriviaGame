@@ -1,115 +1,173 @@
 $(document).ready(function() {
 
-    var number = 31;
-    var timer;
+    var timer = 30;
+    var intervalId;
     var questions = [
-        "Who was the lead singer for Black Sabbath in the 1970s?", 
-        "Who was the lead guitar player for Led Zeppelin?",
-        "In what year did Van Halen release their groundbreaking debut album?"
+        {
+            question: "Who was the lead singer for Black Sabbath in the 1970s?",
+            choices: ["Ronnie James Dio", "Ozzy Osbourne", "Ian Gillan", "Glenn Hughes"],
+            answer: 1,
+            photo: "assets/images/ozzy.jpg"
 
+        },
+        {
+            question: "From what country is the band Thin Lizzy from?",
+            choices: ["Ireland", "Scotland", "New Zealand", "Sweden"],
+            answer: 0,
+            photo: "assets/images/lizzy.jpg"
+        },
+        {
+            question: "In what year did Van Halen release their groundbreaking debut album?",
+            choices: ["1976", "1977", "1978", "1979"],
+            answer: 2,
+            photo: "assets/images/halen.png"
+
+        },
+        {
+            question: "Who was the lead guitar player for Led Zeppelin?",
+            choices: ["Tony Iommi", "Brian May", "Jimmy Page", "Ritchie Blackmore"],
+            answer: 2,
+            photo: "assets/images/page.jpg"
+        },
+        {
+            question: "What is the highest-selling KISS album?",
+            choices: ["Destroyer", "Love Gun", "Alive II", "Alive"],
+            answer: 3,
+            photo: "assets/images/alive.jpg"
+
+        }
     ];
-    var answers = [
-        "Ozzy Osbourne", "Jimmy Page", "1978"
-    ];
+
 
     var correctAnswers = 0;
     var wrongAnswers = 0;
     var unanswered = 0;
     var count = 0;
+    var pick;
+    var running = false;
+   
 
-    function run() {
-        clearInterval(timer);
-        timer = setInterval(nextQuestion, 1000);
-        $("#text").html("<p>Time Remaining: " + number)
+    $("#start").on("click", function() {
         $("#start").hide();
-        nextQuestion();
+        $("#text").empty();
+        runTimer();
+        displayQuestion();
+    });
+
+    function stop() {
+        clearInterval(intervalId)
+        running = false;
     };
 
-    function nextQuestion() {
-        number--;
-        var questionContent = Object.values(questions)[count];
-        $("#question-response").text(questionContent);
-        var questionOptions = Object.values(options)[count];
-        $.each(questionOptions, function(index, key){
-          $("#options").append($("<button class='option btn btn-info btn-lg'>"+key+"</button>"));
-        })
-        $("#text").html("<p>Time Remaining: " + number)
+    function runTimer(){
+        if (!running) {
+        intervalId = setInterval(decrement, 1000); 
+        running = true;
+        };
+    }
+
+    function decrement() {
+        timer--;
+        $("#timer").html("<p>Time Remaining: " + timer)
         
-        if (number === 0) {
+        if (timer === 0) {
             timeup();
         };
 
     };
 
-    function guessCheck() {
+    function displayQuestion() {
+        pick = questions[count];
+        $("#question-response").html("<h2>" + pick.question + "</h2>");
+        $("#correct-answer").empty();
+        $("#images").empty();
+		for(var i = 0; i < pick.choices.length; i++) {
+			var userChoice = $("<button>");
+			userChoice.addClass("answerchoice");
+			userChoice.html(pick.choices[i]);
+			userChoice.attr("data-guessvalue", i);
+			$("#options").append(userChoice);
+
+    };
+    $(".answerchoice").on("click", function () {
+        userGuess = parseInt($(this).attr("data-guessvalue"));
+        if (userGuess === pick.answer) {
+            correctAnswer();
     
-       
-        var resultId;
-        
-        var currentAnswer = Object.values(answers)[count];
-        
-        if ($(this).text() === currentAnswer) {
-        
-          $(this).addClass('btn-success').removeClass('btn-info');
-          correctAnswer();
         } else {
-          $(this).addClass('btn-danger').removeClass('btn-info');
-          wrongAnswer();
-            };
-        
+            wrongAnswer();
+        };
+    });
+};
+
+
+    function nextQuestion() {
+        count ++;
+        displayQuestion();
+        if (count === questions.length){
+            results();
+         };
     };
 
-    function guessResult() {
-        count++;
-        $('.option').remove();
-        $('#results h3').remove();
-        trivia.nextQuestion();
-         
-      }; 
-
     function timeup() {
-        stop ();
+        stop();
+        pick = questions[count];
         $("#question-response").html("<p>Out of Time!</p>")
-        $("#correct-anwer").html("<p>The correct answer was "+ Object.values(answers)[count] +"</p>");
+        $("#correct-answer").html("<p>The correct answer was "+ pick.choices[pick.answer] +"!</p>");
+        $("#images").html("<img src=" + pick.photo + " width='200px' height='250px'/>")
+        $("#timer").empty();
+        $("#options").empty();
         unanswered ++;
-        resultId = setTimeout(guessResult, 1000);
-      
+        setTimeout(nextQuestion, 3000);
+        setTimeout(runTimer, 3000);
+        timer = 30;
     };
 
     function wrongAnswer() {
-         stop ();
-         $("#question-response").html("<p>Wrong Answer!</p>")
-         $("#correct-anwer").html("<p>The correct answer was "+ Object.values(answers)[count] +"</p>");
-         wrongAnswers ++;
-         resultId = setTimeout(guessResult, 1000);
+        stop();
+        pick = questions[count];
+        $("#question-response").html("<p>Wrong!</p>")
+        $("#correct-answer").html("<p>The correct answer was "+ pick.choices[pick.answer] +"!</p>");
+        $("#images").html("<img src=" + pick.photo + " width='200px' height='225px'/>")
+        $("#timer").empty();
+        $("#options").empty();
+        wrongAnswers ++;
+        setTimeout(nextQuestion, 3000);
+        setTimeout(runTimer, 3000);
+        timer = 30;
      };
 
      function correctAnswer() {
-         stop ();
-         $("#question-response").html("<p>Correct!</p>")
-         $("#correct-anwer").html("<p>The correct answer was "+ Object.values(answers)[count] +"</p>");
-         correctAnswers ++;
-         resultId = setTimeout(guessResult, 1000);
+        stop();
+        pick = questions[count];
+        $("#question-response").html("<p>Correct!</p>")
+        $("#correct-answer").html("<p>The answer was indeed "+ pick.choices[pick.answer] +"!</p>");
+        $("#images").html("<img src=" + pick.photo + " width='200px' height='250px'/>")
+        $("#timer").empty();
+        $("#options").empty();
+        correctAnswers ++;
+        setTimeout(nextQuestion, 3000);
+        setTimeout(runTimer, 3000);
+        timer = 30;
      };
 
-     if (count === Object.keys(questions).length){
-        $("#results").html("<h3>Long Live Rock n' Roll!</h3>"+
-        "<p>Correct: "+ correctAnswers +"</p>"+
-        "<p>Incorrect: "+ wrongAnswers +"</p>"+
-        "<p>Unaswered: "+ unanswered +"</p>");
-
-        $("#start").text("Start Over?");
-     };
-
-    function start() {
-        run();
-    };
-
-    function stop() {
-        clearInterval(timer)
-    };
+     
+     function results() {
+        stop();
+            $("#results").html(
+            "<h3>Long Live Rock n' Roll!</h3>"+
+            "<p>Correct: "+ correctAnswers +"</p>"+
+            "<p>Incorrect: "+ wrongAnswers +"</p>"+
+            "<p>Unaswered: "+ unanswered +"</p>");
+            $("#options").empty();
+            $("#questions-response").empty();
+            $("#text").empty();
+            $("#timer").empty();
+    
+            $("#start").text("Start Over?");
+     }
+   
     
   
-    $("#start").on("click", start)
-
+   
 });

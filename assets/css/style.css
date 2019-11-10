@@ -22,11 +22,23 @@ body {
     font-size: larger;
 }
 
+#timer {
+    text-align: center;
+}
+
 #question-response {
     text-align: center;
     font-size: larger; 
 }
 
 #options {
+    text-align: center;
+}
+
+#correct-answer {
+    text-align: center;
+}
+
+#images {
     text-align: center;
 }
