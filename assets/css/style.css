@@ -35,10 +35,22 @@ body {
     text-align: center;
 }
 
+#start-over {
+    text-align: center;
+}
+
 #correct-answer {
     text-align: center;
 }
 
 #images {
+    text-align: center;
+}
+
+#results {
+    text-align: center;
+}
+
+#start-over {
     text-align: center;
 }

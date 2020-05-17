@@ -54,6 +54,14 @@ $(document).ready(function() {
         displayQuestion();
     });
 
+    $("#start-over").on("click", function() {
+        $("#start-over").hide();
+        $("#text").empty();
+        runTimer();
+        displayQuestion();
+    });
+
+
     function stop() {
         clearInterval(intervalId)
         running = false;
@@ -89,6 +97,7 @@ $(document).ready(function() {
 			$("#options").append(userChoice);
 
     };
+
     $(".answerchoice").on("click", function () {
         userGuess = parseInt($(this).attr("data-guessvalue"));
         if (userGuess === pick.answer) {
@@ -103,10 +112,11 @@ $(document).ready(function() {
 
     function nextQuestion() {
         count ++;
-        displayQuestion();
         if (count === questions.length){
             results();
-         };
+         } else {
+            displayQuestion()
+         }
     };
 
     function timeup() {
@@ -153,18 +163,18 @@ $(document).ready(function() {
 
      
      function results() {
-        stop();
+         running=true;
+            $("#correct-answer").empty();
+            $("#images").empty();
+            $("#options").empty();
+            $("#question-response").empty();
+            $("#text").empty();
+            $("#timer").empty();
             $("#results").html(
             "<h3>Long Live Rock n' Roll!</h3>"+
             "<p>Correct: "+ correctAnswers +"</p>"+
             "<p>Incorrect: "+ wrongAnswers +"</p>"+
             "<p>Unaswered: "+ unanswered +"</p>");
-            $("#options").empty();
-            $("#questions-response").empty();
-            $("#text").empty();
-            $("#timer").empty();
-    
-            $("#start").text("Start Over?");
      }
    
     
